@@ -1,4 +1,4 @@
-Работа мечты
+Работа мечты [![Build Status](https://app.travis-ci.com/ignatown/job4j_dreamjob.svg?branch=main)](https://app.travis-ci.com/ignatown/job4j_dreamjob)
 
 Приложение - биржа работы.
 
