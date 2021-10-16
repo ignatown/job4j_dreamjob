@@ -15,10 +15,16 @@ public class Store {
     private final Map<Integer, Post> posts = new ConcurrentHashMap<>();
     private static AtomicInteger POST_ID = new AtomicInteger(4);
     private final Map<Integer, Candidate> candidates = new ConcurrentHashMap<>();
+    private static AtomicInteger CANDIDATE_ID = new AtomicInteger(4);
 
     public void save(Post post) {
         post.setId(POST_ID.incrementAndGet());
         posts.put(post.getId(), post);
+    }
+
+    public void save(Candidate candidate) {
+        candidate.setId(POST_ID.incrementAndGet());
+        candidates.put(candidate.getId(), candidate);
     }
 
     private Store() {

@@ -12,6 +12,14 @@
     <servlet-name>PostServlet</servlet-name>
     <url-pattern>/post/save</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>CandidateServelet</servlet-name>
+    <servlet-class>ru.job4j.dream.servlet.CandidateServelet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CandidateServelet</servlet-name>
+    <url-pattern>/candidate/save</url-pattern>
+  </servlet-mapping>
 
 
 </web-app>
