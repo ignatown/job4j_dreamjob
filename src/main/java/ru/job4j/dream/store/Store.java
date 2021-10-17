@@ -17,14 +17,26 @@ public class Store {
     private final Map<Integer, Candidate> candidates = new ConcurrentHashMap<>();
     private static AtomicInteger CANDIDATE_ID = new AtomicInteger(4);
 
-    public void save(Post post) {
-        post.setId(POST_ID.incrementAndGet());
+    public void savePost(Post post) {
+        if (post.getId() == 0) {
+            post.setId(POST_ID.incrementAndGet());
+        }
         posts.put(post.getId(), post);
     }
 
-    public void save(Candidate candidate) {
-        candidate.setId(POST_ID.incrementAndGet());
+    public Post findPostById(int id) {
+        return posts.get(id);
+    }
+
+    public void saveCandidate(Candidate candidate) {
+        if (candidate.getId() == 0) {
+            candidate.setId(POST_ID.incrementAndGet());
+        }
         candidates.put(candidate.getId(), candidate);
+    }
+
+    public Candidate findCandidateById(int id) {
+        return candidates.get(id);
     }
 
     private Store() {
