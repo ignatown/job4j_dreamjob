@@ -28,15 +28,10 @@
     <div class="row">
         <div class="card" style="width: 100%">
             <div class="card-header">
-                Кандидаты
+             <center> <h2>  Кандидаты </h2> </center>
             </div>
             <div class="card-body">
                 <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">Названия</th>
-                    </tr>
-                    </thead>
                     <tbody>
                 <c:forEach items="${candidates}" var="candidate">
                     <tr>
@@ -45,6 +40,14 @@
                                 <i class="fa fa-edit mr-3"></i>
                             </a>
                             <c:out value="${candidate.name}"/>
+                            <td>
+                             <a href='<c:url value="/upload.jsp?id=${candidate.id}"/>'>
+                                  Добавить фото</a>
+                              </td>
+                              <td>
+                                  <a href='<c:url value="/remove.jsp?id=${candidate.id}"/>'>
+                                  Удалить кандидата</a>
+                              </td>
                         </td>
                     </tr>
                 </c:forEach>

@@ -29,7 +29,7 @@
     <div class="row">
         <div class="card" style="width: 100%">
             <div class="card-header">
-                Вакансии
+                             <center> <h2>  Вакансии </h2> </center>
             </div>
             <div class="card-body">
                 <table class="table">
