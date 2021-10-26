@@ -13,9 +13,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PsqlStore implements Store {
 
+    private static final Logger logger = LogManager.getLogger();
     private final BasicDataSource pool = new BasicDataSource();
 
     private PsqlStore() {
@@ -61,7 +64,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("Failed to extract all posts from database");
         }
         return posts;
     }
@@ -78,7 +81,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("Failed to extract all candidates from database");
         }
         return candidates;
     }
@@ -113,7 +116,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("Failed to create a post in the database");
         }
         return post;
     }
@@ -131,7 +134,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("Failed to create a candidate in the database");
         }
         return candidate;
     }
@@ -144,7 +147,7 @@ public class PsqlStore implements Store {
             ps.setInt(2, post.getId());
             ps.execute();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("Failed to update a post in the database");
         }
     }
 
@@ -156,13 +159,13 @@ public class PsqlStore implements Store {
             ps.setInt(2, candidate.getId());
             ps.execute();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("Failed to update a candidate in the database");
         }
     }
 
     @Override
     public Post findPostById(int id) {
-        Post post = new Post(id, "");
+        Post post = null;
         try (Connection cn = pool.getConnection();
              PreparedStatement ps =  cn.prepareStatement("SELECT * FROM post WHERE id = ?")
         ) {
@@ -170,18 +173,18 @@ public class PsqlStore implements Store {
             ps.execute();
             try (ResultSet it = ps.executeQuery()) {
                 if (it.next()) {
-                    post.setName(it.getString("name"));
+                    post = new Post(id, it.getString("name"));
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("Failed to extract post by id from database");
         }
         return post;
     }
 
     @Override
     public Candidate findCandidateById(int id) {
-        Candidate candidate = new Candidate(id, "");
+        Candidate candidate = null;
         try (Connection cn = pool.getConnection();
              PreparedStatement ps =  cn.prepareStatement("SELECT * FROM candidate WHERE id = ?")
         ) {
@@ -189,17 +192,16 @@ public class PsqlStore implements Store {
             ps.execute();
             try (ResultSet it = ps.executeQuery()) {
                 if (it.next()) {
-                    candidate.setName(it.getString("name"));
+                    candidate = new Candidate(id, it.getString("name"));
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("Failed to extract candidate by id from database");
         }
         return candidate;
     }
 
     public void deleteCandidate(int id) {
-        Candidate candidate = new Candidate(id, "");
         try (Connection cn = pool.getConnection();
              PreparedStatement ps =  cn.prepareStatement("DELETE FROM candidate WHERE id = ?")
         ) {
