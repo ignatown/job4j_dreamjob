@@ -6,9 +6,7 @@ import ru.job4j.dream.model.Post;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -18,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 public class PsqlStore implements Store {
 
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
     private final BasicDataSource pool = new BasicDataSource();
 
     private PsqlStore() {
@@ -64,7 +62,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            logger.warn("Failed to extract all posts from database");
+            LOGGER.warn("Failed to extract all posts from database");
         }
         return posts;
     }
@@ -81,7 +79,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            logger.warn("Failed to extract all candidates from database");
+            LOGGER.warn("Failed to extract all candidates from database");
         }
         return candidates;
     }
@@ -116,7 +114,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            logger.warn("Failed to create a post in the database");
+            LOGGER.warn("Failed to create a post in the database");
         }
         return post;
     }
@@ -134,7 +132,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            logger.warn("Failed to create a candidate in the database");
+            LOGGER.warn("Failed to create a candidate in the database");
         }
         return candidate;
     }
@@ -147,7 +145,7 @@ public class PsqlStore implements Store {
             ps.setInt(2, post.getId());
             ps.execute();
         } catch (Exception e) {
-            logger.warn("Failed to update a post in the database");
+            LOGGER.warn("Failed to update a post in the database");
         }
     }
 
@@ -159,7 +157,7 @@ public class PsqlStore implements Store {
             ps.setInt(2, candidate.getId());
             ps.execute();
         } catch (Exception e) {
-            logger.warn("Failed to update a candidate in the database");
+            LOGGER.warn("Failed to update a candidate in the database");
         }
     }
 
@@ -177,7 +175,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            logger.warn("Failed to extract post by id from database");
+            LOGGER.warn("Failed to extract post by id from database");
         }
         return post;
     }
@@ -196,7 +194,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            logger.warn("Failed to extract candidate by id from database");
+            LOGGER.warn("Failed to extract candidate by id from database");
         }
         return candidate;
     }
@@ -208,7 +206,21 @@ public class PsqlStore implements Store {
             ps.setInt(1, id);
             ps.execute();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.warn("Failed to delete a candidate by id from database");
         }
     }
+
+    public void truncateTable(String tableName) {
+        if (!"post".equals(tableName) && !"candidate".equals(tableName)) {
+            throw new IllegalArgumentException("Illegal table name for truncating");
+        }
+        try (Connection connection = pool.getConnection();
+             Statement statement = connection.createStatement()) {
+           statement.executeUpdate("truncate " + tableName);
+        } catch (SQLException e) {
+            LOGGER.warn("Failed to truncate " + tableName);
+        }
+
+    }
+
 }
