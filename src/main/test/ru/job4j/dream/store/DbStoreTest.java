@@ -22,7 +22,6 @@ public class DbStoreTest {
         store.savePost(post2);
         store.savePost(post3);
         assertThat(store.findAllPosts(), is(List.of(post1, post2, post3)));
-        store.truncateTable("post");
     }
 
     @Test
@@ -36,7 +35,6 @@ public class DbStoreTest {
         store.saveCandidate(candidate2);
         store.saveCandidate(candidate3);
         assertThat(store.findAllCandidates(), is(List.of(candidate1, candidate2, candidate3)));
-        store.truncateTable("candidate");
     }
 
     @Test
@@ -47,7 +45,6 @@ public class DbStoreTest {
         store.saveCandidate(candidate);
         Candidate candidateInDb = store.findCandidateById(candidate.getId());
         assertThat(candidateInDb.getName(), is(candidateInDb.getName()));
-        store.truncateTable("candidate");
     }
 
     @Test
@@ -58,6 +55,18 @@ public class DbStoreTest {
         store.savePost(post);
         Post postInDb = store.findPostById(post.getId());
         assertThat(postInDb.getName(), is(post.getName()));
-        store.truncateTable("post");
+    }
+
+    @Test
+    public void deleteCandidate() {
+        Store store = PsqlStore.instOf();
+        store.truncateTable("candidate");
+        Candidate candidate1 = new Candidate(0, "1 Java Developer");
+        Candidate candidate2 = new Candidate(0, "2 Java Developer");
+        store.saveCandidate(candidate1);
+        store.saveCandidate(candidate2);
+        assertThat(store.findAllCandidates(), is(List.of(candidate1, candidate2)));
+        store.deleteCandidate(1);
+        assertThat(store.findAllCandidates(), is(List.of(candidate2)));
     }
 }

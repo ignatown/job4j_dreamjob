@@ -216,7 +216,8 @@ public class PsqlStore implements Store {
         }
         try (Connection connection = pool.getConnection();
              Statement statement = connection.createStatement()) {
-           statement.executeUpdate("truncate " + tableName);
+           statement.executeUpdate("truncate table " + tableName);
+           statement.executeUpdate("ALTER SEQUENCE " + tableName +"_id_seq RESTART WITH 1");
         } catch (SQLException e) {
             LOGGER.warn("Failed to truncate " + tableName);
         }
