@@ -62,7 +62,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            LOGGER.warn("Failed to extract all posts from database");
+            LOGGER.warn("Failed to extract all posts from database", e);
         }
         return posts;
     }
@@ -79,7 +79,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            LOGGER.warn("Failed to extract all candidates from database");
+            LOGGER.warn("Failed to extract all candidates from database", e);
         }
         return candidates;
     }
@@ -114,7 +114,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            LOGGER.warn("Failed to create a post in the database");
+            LOGGER.warn("Failed to create a post in the database", e);
         }
         return post;
     }
@@ -132,7 +132,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            LOGGER.warn("Failed to create a candidate in the database");
+            LOGGER.warn("Failed to create a candidate in the database", e);
         }
         return candidate;
     }
@@ -145,7 +145,7 @@ public class PsqlStore implements Store {
             ps.setInt(2, post.getId());
             ps.execute();
         } catch (Exception e) {
-            LOGGER.warn("Failed to update a post in the database");
+            LOGGER.warn("Failed to update a post in the database", e);
         }
     }
 
@@ -157,7 +157,7 @@ public class PsqlStore implements Store {
             ps.setInt(2, candidate.getId());
             ps.execute();
         } catch (Exception e) {
-            LOGGER.warn("Failed to update a candidate in the database");
+            LOGGER.warn("Failed to update a candidate in the database", e);
         }
     }
 
@@ -175,7 +175,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            LOGGER.warn("Failed to extract post by id from database");
+            LOGGER.warn("Failed to extract post by id from database", e);
         }
         return post;
     }
@@ -194,7 +194,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            LOGGER.warn("Failed to extract candidate by id from database");
+            LOGGER.warn("Failed to extract candidate by id from database", e);
         }
         return candidate;
     }
@@ -206,7 +206,7 @@ public class PsqlStore implements Store {
             ps.setInt(1, id);
             ps.execute();
         } catch (Exception e) {
-            LOGGER.warn("Failed to delete a candidate by id from database");
+            LOGGER.warn("Failed to delete a candidate by id from database", e);
         }
     }
 
@@ -219,7 +219,7 @@ public class PsqlStore implements Store {
            statement.executeUpdate("truncate table " + tableName);
            statement.executeUpdate("ALTER SEQUENCE " + tableName +"_id_seq RESTART WITH 1");
         } catch (SQLException e) {
-            LOGGER.warn("Failed to truncate " + tableName);
+            LOGGER.warn("Failed to truncate " + tableName, e);
         }
 
     }
