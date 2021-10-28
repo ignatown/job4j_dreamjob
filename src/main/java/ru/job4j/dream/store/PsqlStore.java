@@ -216,7 +216,7 @@ public class PsqlStore implements Store {
     }
 
     public void truncateTable(String tableName) {
-        if (!"post".equals(tableName) && !"candidate".equals(tableName) && !"user".equals(tableName)) {
+        if (!"post".equals(tableName) && !"candidate".equals(tableName) && !"users".equals(tableName)) {
             throw new IllegalArgumentException("Illegal table name for truncating");
         }
         try (Connection connection = pool.getConnection();

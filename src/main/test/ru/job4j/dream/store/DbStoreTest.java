@@ -3,6 +3,7 @@ package ru.job4j.dream.store;
 import org.junit.Test;
 import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.model.Post;
+import ru.job4j.dream.model.User;
 
 import java.util.List;
 
@@ -22,6 +23,19 @@ public class DbStoreTest {
         store.savePost(post2);
         store.savePost(post3);
         assertThat(store.findAllPosts(), is(List.of(post1, post2, post3)));
+    }
+
+    @Test
+    public void whenFindAllUsers() {
+        Store store = PsqlStore.instOf();
+        store.truncateTable("users");
+        User user1 = new User(0, "1 User", "1 Email", "1 Password");
+        User user2 = new User(0, "2 User", "2 Email", "2 Password");
+        User user3 = new User(0, "3 User", "3 Email", "3 Password");
+        store.saveUser(user1);
+        store.saveUser(user2);
+        store.saveUser(user3);
+        assertThat(store.findAllUsers(), is(List.of(user1, user2, user3)));
     }
 
     @Test
@@ -45,6 +59,16 @@ public class DbStoreTest {
         store.saveCandidate(candidate);
         Candidate candidateInDb = store.findCandidateById(candidate.getId());
         assertThat(candidateInDb.getName(), is(candidateInDb.getName()));
+    }
+
+    @Test
+    public void whenCreateUser() {
+        Store store = PsqlStore.instOf();
+        store.truncateTable("users");
+        User user = new User(0, "User", "Email", "Password");
+        store.saveUser(user);
+        User userInDb = store.findUserById(user.getId());
+        assertThat(userInDb.getName(), is(userInDb.getName()));
     }
 
     @Test
