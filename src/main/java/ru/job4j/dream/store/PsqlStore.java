@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.job4j.dream.model.User;
 
 public class PsqlStore implements Store {
 
@@ -215,7 +216,7 @@ public class PsqlStore implements Store {
     }
 
     public void truncateTable(String tableName) {
-        if (!"post".equals(tableName) && !"candidate".equals(tableName)) {
+        if (!"post".equals(tableName) && !"candidate".equals(tableName) && !"user".equals(tableName)) {
             throw new IllegalArgumentException("Illegal table name for truncating");
         }
         try (Connection connection = pool.getConnection();
@@ -226,6 +227,85 @@ public class PsqlStore implements Store {
             LOGGER.warn("Failed to truncate " + tableName, e);
         }
 
+    }
+
+    @Override
+    public Collection<User> findAllUsers() {
+        List<User> users = new ArrayList<>();
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement("SELECT * FROM users")
+        ) {
+            try (ResultSet it = ps.executeQuery()) {
+                while (it.next()) {
+                    users.add(new User(it.getInt("id"), it.getString("name"), it.getString("email"), it.getString("password")));
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Failed to extract all users from database", e);
+        }
+        return users;
+    }
+
+    @Override
+    public void saveUser(User user) {
+        if (user.getId() == 0) {
+            createUser(user);
+        } else {
+            updateUser(user);
+        }
+    }
+
+    private void updateUser(User user) {
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement("UPDATE users SET name = ? , email = ? , password = ? WHERE id = ?")
+        ) {
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPassword());
+            ps.setInt(4, user.getId());
+            ps.execute();
+        } catch (Exception e) {
+            LOGGER.warn("Failed to update a user in the database", e);
+        }
+    }
+
+    private User createUser(User user) {
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement("INSERT INTO users(name, email, password) VALUES (?, ?, ?)",
+                     PreparedStatement.RETURN_GENERATED_KEYS)
+        ) {
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPassword());
+            ps.execute();
+            try (ResultSet id = ps.getGeneratedKeys()) {
+                if (id.next()) {
+                    user.setId(id.getInt(1));
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Failed to create a user in the database", e);
+        }
+        return user;
+    }
+
+    @Override
+    public User findUserById(int id) {
+        User user = null;
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement("SELECT * FROM users WHERE id = ?")
+        ) {
+            ps.setInt(1, id);
+            ps.execute();
+            try (ResultSet it = ps.executeQuery()) {
+                if (it.next()) {
+                    user = new User(id, it.getString("name"), it.getString("email"), it.getString("password"));
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Failed to extract user by id from database", e);
+        }
+        return user;
     }
 
 }
