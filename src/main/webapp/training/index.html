@@ -7,6 +7,23 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        function validate() {
+            if ($('#name').val() === '') {
+                alert('Имя не заполнено!');
+                return false;
+            } else
+            if ($('#surname').val() === '') {
+                alert('Фамилия не заполнена!');
+                return false;
+            } else
+            if ($('#description').val() === '') {
+                alert('Описание не заполнено!');
+                return false;
+            }
+            return true;
+        }
+    </script>
 </head>
 <body>
 
@@ -45,11 +62,11 @@
         </form>
         <br></br>
         <div class="mb-3">
-            <label for="validationTextarea">Описание</label>
-            <textarea class="form-control is-invalid" id="validationTextarea" required></textarea>
+            <label for="description">Описание</label>
+            <textarea class="form-control is-invalid" id="description" required></textarea>
         </div>
         <br></br>
-        <button type="button" class="btn btn-light">Сохранить</button>
+        <button type="button" class="btn btn-light" onclick="return validate();"  ">Сохранить</button>
         <br></br>
     </form>
 
