@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>[#58522]</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container-fluid">
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Job4j</a></li>
+            <li class="breadcrumb-item"><a href="#">Уроки</a></li>
+            <li class="breadcrumb-item"><a href="#">3.2.8. JS, JQuery, Ajax</a></li>
+            <li class="breadcrumb-item active" aria-current="page">1. index.html + bootstrap, form, table</li>
+        </ol>
+    </nav>
+
+    <form>
+        <div class="form-group">
+            <label for="name">Имя</label>
+            <input type="name" class="form-control" id="name">
+        </div>
+        <div class="form-group">
+            <label for="surname">Фамилия</label>
+            <input type="surname" class="form-control" id="surname">
+        </div>
+        <label for="surname">Пол</label>
+        <form>
+            <div class="form-row align-items-center">
+                <div class="col-auto my-1">
+                    <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Preference</label>
+                    <select class="custom-select mr-sm-2" id="inlineFormCustomSelect">
+                        <option selected>Выбрать пол..</option>
+                        <option value="1">Мужской</option>
+                        <option value="2">Женский</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+        <br></br>
+        <div class="mb-3">
+            <label for="validationTextarea">Описание</label>
+            <textarea class="form-control is-invalid" id="validationTextarea" required></textarea>
+        </div>
+        <br></br>
+        <button type="button" class="btn btn-light">Сохранить</button>
+        <br></br>
+    </form>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Имя</th>
+            <th scope="col">Фамилия</th>
+            <th scope="col">Пол</th>
+            <th scope="col">Описание</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row">1</th>
+            <td>Имя1</td>
+            <td>Фамилия1</td>
+            <td>Мужской</td>
+            <td>Описание1.....</td>
+        </tr>
+        <tr>
+            <th scope="row">2</th>
+            <td>Имя2</td>
+            <td>Фамилия2</td>
+            <td>Мужской</td>
+            <td>Описание2.....</td>
+        </tr>
+        <tr>
+            <th scope="row">3</th>
+            <td>Имя3</td>
+            <td>Фамилия3</td>
+            <td>Женский</td>
+            <td>Описание3.....</td>
+        </tr>
+        <tr>
+            <th scope="row">4</th>
+            <td>Имя4</td>
+            <td>Фамилия4</td>
+            <td>Мужской</td>
+            <td>Описание4.....</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <blockquote class="blockquote text-right">
+        <footer class="blockquote-footer">Никита Игнатов[#424440]</footer>
+    </blockquote>
+
+</div>
+
+</body>
+</html>
