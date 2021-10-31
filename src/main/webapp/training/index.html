@@ -29,6 +29,7 @@
             return true;
         }
         function addRow() {
+           if (validate()) {
             $('#table tr:last').after(
                 '<tr><th scope="row">' + (++i) + '</th>'
                 + '<td>' + $('#name').val() + '</td>'
@@ -36,6 +37,7 @@
                 + '<td>' + $('#sex').val() + '</td>'
                 + '<td>' + $('#description').val() + '</td></tr>'
             );
+           }
         }
 </script>
 </head>
@@ -80,7 +82,7 @@
             <textarea class="form-control is-invalid" id="description" required></textarea>
         </div>
         <br></br>
-        <button type="button" class="btn btn-light" onclick="if (validate()) { addRow(); }">Сохранить</button>
+        <button type="button" class="btn btn-light" onclick="addRow();">Сохранить</button>
         <br></br>
     </form>
 
