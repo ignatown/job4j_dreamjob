@@ -21,6 +21,7 @@ public class CandidateServletTest {
         HttpServletRequest req = mock(HttpServletRequest.class);
         when(req.getParameter("id")).thenReturn("0");
         when(req.getParameter("name")).thenReturn("Some Java Developer");
+        when(req.getParameter("city")).thenReturn("1");
         new CandidateServelet().doPost(req, mock(HttpServletResponse.class));
         assertThat(PsqlStore.instOf().findCandidateById(1).getName(), is("Some Java Developer"));
     }

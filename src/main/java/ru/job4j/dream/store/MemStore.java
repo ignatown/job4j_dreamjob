@@ -1,6 +1,7 @@
 package ru.job4j.dream.store;
 
 import ru.job4j.dream.model.Candidate;
+import ru.job4j.dream.model.City;
 import ru.job4j.dream.model.Post;
 
 import java.util.Collection;
@@ -16,6 +17,7 @@ public class MemStore {
     private static AtomicInteger POST_ID = new AtomicInteger(4);
     private final Map<Integer, Candidate> candidates = new ConcurrentHashMap<>();
     private static AtomicInteger CANDIDATE_ID = new AtomicInteger(4);
+    private final Map<Integer, City> cities = new ConcurrentHashMap<>();
 
     private MemStore() {
         posts.put(1, new Post(1, "Junior Java Job"));
@@ -67,4 +69,10 @@ public class MemStore {
     public Collection<Candidate> findAllCandidates() {
         return candidates.values();
     }
+
+    public Collection<Post> findLastDayPosts() { return posts.values(); }
+
+    public Collection<Candidate> findLastDayCandidates() { return candidates.values(); }
+
+    public Collection<City> findAllCities() { return cities.values(); }
 }

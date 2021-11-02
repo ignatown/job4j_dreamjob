@@ -2,6 +2,8 @@
 <%@ page import="ru.job4j.dream.store.Store" %>
 <%@ page import="ru.job4j.dream.model.Candidate" %>
 <%@ page import="java.util.Collection" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="ru.job4j.dream.model.City" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <!doctype html>
 <html lang="en">
@@ -48,6 +50,17 @@
                                   <a href='<c:url value="/remove.jsp?id=${candidate.id}"/>'>
                                   Удалить кандидата</a>
                               </td>
+                        <td>
+                            <c:set var="cityid" value="${candidate.cityId}" scope="request"/>
+                            <%
+                                int cityid = (int) request.getAttribute("cityid");
+                                ArrayList cities = (ArrayList) request.getAttribute("cities");
+                                City city = (City) cities.get(cityid - 1);
+                            %>
+                            <%=city.getName()%>
+                        </td>
+                        <td>
+                            <c:out value="${candidate.registered}"/>
                         </td>
                     </tr>
                 </c:forEach>

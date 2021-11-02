@@ -8,12 +8,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 
 public class CandidateServelet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute("candidates", PsqlStore.instOf().findAllCandidates());
+        req.setAttribute("cities", PsqlStore.instOf().findAllCities());
         req.getRequestDispatcher("candidates.jsp").forward(req, resp);
     }
 
@@ -23,7 +25,9 @@ public class CandidateServelet extends HttpServlet {
         PsqlStore.instOf().saveCandidate(
                 new Candidate(
                         Integer.valueOf(req.getParameter("id")),
-                        req.getParameter("name")
+                        req.getParameter("name"),
+                        Integer.parseInt(req.getParameter("city")),
+                        LocalDate.now()
                 )
         );
         resp.sendRedirect(req.getContextPath() + "/candidates.do");

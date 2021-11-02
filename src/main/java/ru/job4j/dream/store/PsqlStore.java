@@ -2,10 +2,10 @@ package ru.job4j.dream.store;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import ru.job4j.dream.model.Candidate;
+import ru.job4j.dream.model.City;
 import ru.job4j.dream.model.Post;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.ArrayList;
@@ -80,7 +80,8 @@ public class PsqlStore implements Store {
         ) {
             try (ResultSet it = ps.executeQuery()) {
                 while (it.next()) {
-                    candidates.add(new Candidate(it.getInt("id"), it.getString("name")));
+                    candidates.add(new Candidate(it.getInt("id"), it.getString("name"), it.getInt("cityid"),
+                            it.getDate("registered").toLocalDate()));
                 }
             }
         } catch (Exception e) {
@@ -109,9 +110,12 @@ public class PsqlStore implements Store {
 
     private Post createPost(Post post) {
         try (Connection cn = pool.getConnection();
-             PreparedStatement ps =  cn.prepareStatement("INSERT INTO post(name) VALUES (?)", PreparedStatement.RETURN_GENERATED_KEYS)
+             PreparedStatement ps =
+                     cn.prepareStatement("INSERT INTO post(name,created) VALUES (?, ?)",
+                             PreparedStatement.RETURN_GENERATED_KEYS)
         ) {
             ps.setString(1, post.getName());
+            ps.setObject(2, post.getCreated());
             ps.execute();
             try (ResultSet id = ps.getGeneratedKeys()) {
                 if (id.next()) {
@@ -126,10 +130,13 @@ public class PsqlStore implements Store {
 
     private Candidate createCandidate(Candidate candidate) {
         try (Connection cn = pool.getConnection();
-             PreparedStatement ps =  cn.prepareStatement("INSERT INTO candidate(name) VALUES (?)",
+             PreparedStatement ps =
+                     cn.prepareStatement("INSERT INTO candidate(name,cityid,registered) VALUES (?,?,?)",
                      PreparedStatement.RETURN_GENERATED_KEYS)
         ) {
             ps.setString(1, candidate.getName());
+            ps.setInt(2, candidate.getCityId());
+            ps.setObject(3, candidate.getRegistered());
             ps.execute();
             try (ResultSet id = ps.getGeneratedKeys()) {
                 if (id.next()) {
@@ -156,10 +163,13 @@ public class PsqlStore implements Store {
 
     private void updateCandidate(Candidate candidate) {
         try (Connection cn = pool.getConnection();
-             PreparedStatement ps =  cn.prepareStatement("UPDATE candidate SET name = ? WHERE id = ?")
+             PreparedStatement ps =
+                     cn.prepareStatement("UPDATE candidate SET name = ? cityid = ?, registered = ? WHERE id = ?")
         ) {
             ps.setString(1, candidate.getName());
-            ps.setInt(2, candidate.getId());
+            ps.setInt(2, candidate.getCityId());
+            ps.setObject(3, candidate.getRegistered());
+            ps.setInt(4, candidate.getId());
             ps.execute();
         } catch (Exception e) {
             LOGGER.warn("Failed to update a candidate in the database", e);
@@ -195,7 +205,8 @@ public class PsqlStore implements Store {
             ps.execute();
             try (ResultSet it = ps.executeQuery()) {
                 if (it.next()) {
-                    candidate = new Candidate(id, it.getString("name"));
+                    candidate = new Candidate(id, it.getString("name"), it.getInt("cityid"),
+                            it.getDate("registered").toLocalDate());
                 }
             }
         } catch (Exception e) {
@@ -222,7 +233,7 @@ public class PsqlStore implements Store {
         try (Connection connection = pool.getConnection();
              Statement statement = connection.createStatement()) {
            statement.executeUpdate("truncate table " + tableName);
-           statement.executeUpdate("ALTER SEQUENCE " + tableName +"_id_seq RESTART WITH 1");
+           statement.executeUpdate("ALTER SEQUENCE " + tableName + "_id_seq RESTART WITH 1");
         } catch (SQLException e) {
             LOGGER.warn("Failed to truncate " + tableName, e);
         }
@@ -325,6 +336,61 @@ public class PsqlStore implements Store {
             LOGGER.warn("Failed to extract user by email from database", e);
         }
         return user;
+    }
+
+    @Override
+    public Collection<Candidate> findLastDayCandidates() {
+        List<Candidate> rsl = new ArrayList<>();
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement(
+                     "SELECT * FROM Candidate WHERE registered BETWEEN current_timestamp - interval '1 day' AND current_timestamp")) {
+            try (ResultSet it = ps.executeQuery()) {
+                while (it.next()) {
+                    rsl.add(new Candidate(it.getInt("id"),
+                            it.getString("name"),
+                            it.getInt("cityid"),
+                            it.getDate("registered").toLocalDate()));
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Failed to extract last day candidates from database", e);
+        }
+        return rsl;
+    }
+
+    @Override
+    public Collection<Post> findLastDayPosts() {
+        List<Post> rsl = new ArrayList<>();
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement(
+                     "SELECT * FROM post WHERE created BETWEEN current_timestamp - interval '1 day' AND current_timestamp")) {
+            try (ResultSet it = ps.executeQuery()) {
+                while (it.next()) {
+                    rsl.add(new Post(it.getInt("id"),
+                            it.getString("name"),
+                            it.getDate("created").toLocalDate()));
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Failed to extract last day posts from database", e);
+        }
+        return rsl;
+    }
+
+    @Override
+    public Collection<City> findAllCities() {
+        List<City> rsl = new ArrayList<>();
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement("SELECT * FROM city")) {
+            try (ResultSet it = ps.executeQuery()) {
+                while (it.next()) {
+                    rsl.add(new City(it.getInt("id"), it.getString("name")));
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Failed to extract all cities from database", e);
+        }
+        return rsl;
     }
 
 }

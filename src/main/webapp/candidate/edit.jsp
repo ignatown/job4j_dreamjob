@@ -18,6 +18,36 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:8080/dreamjob/loadCityList',
+                dataType: 'json'
+            }).done(function (data) {
+                for (var city of data) {
+                    $('#citis').append(`<option value="${city.id}">${city.name}</option>`)
+                }
+            }).fail(function (err) {
+                console.log(err);
+            });
+        });
+
+        function validate() {
+            if ($('#name').val() === '') {
+                alert('Введите имя кандидата!');
+                return false;
+            }
+            if ($('#cityList').val() === '0') {
+                alert('Выберите город!');
+                return false;
+            }
+            return true;
+        }
+
+    </script>
 <title>Работа мечты</title>
 </head>
 <body>
@@ -60,11 +90,16 @@
             </div>
             <div class="card-body">
                               <form action="<%=request.getContextPath()%>/candidates.do?id=<%=candidate.getId()%>" method="post">
-                    <div class="form-group">
-                        <label>Имя</label>
-                        <input type="text" class="form-control" name="name" value="<%=candidate.getName()%>">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                                  <div class="form-group">
+                                      <label for="name">Имя кандидата</label>
+                                      <input type="text" class="form-control" name="name" value="<%=candidate.getName()%>" id="name">
+                                  </div>
+                                  <div class="form-group">
+                                      <select class="selectpicker" id="citis" name="city">
+                                          <option value="0">Выберите город...</option>
+                                      </select>
+                                  </div>
+                    <button type="submit" class="btn btn-primary" onclick="validate()">Сохранить</button>
                 </form>
             </div>
         </div>
